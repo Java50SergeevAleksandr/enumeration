@@ -6,20 +6,40 @@ public class Length implements Comparable<Length> {
 
 	private float amount;
 	private LengthUnit unit;
+	private float thisLength;
 
 	public Length(float amount, LengthUnit unit) {
 		this.amount = amount;
 		this.unit = unit;
+		thisLength = amount * unit.getValue();
 	}
 
 	@Override
 	public boolean equals(Object obj) {
+		return thisLength == getTargetLength(obj);
+	}
+
+	@Override
+	public int compareTo(Length o) {
+		int res;
+
+		if (this.equals(o)) {
+			res = 0;
+		} else {
+			res = thisLength > getTargetLength(o) ? 1 : -1;
+		}
+
+		return res;
+	}
+
+	private float getTargetLength(Object obj) {
 		Length length = (Length) obj;
-		return amount * unit.getValue() == length.amount * length.unit.getValue();
+		return length.amount * length.unit.getValue();
+
 	}
 
 	public Length convert(LengthUnit l) {
-		float newAmount = amount * unit.getValue() / l.getValue();
+		float newAmount = thisLength / l.getValue();
 		return new Length(newAmount, l);
 	}
 
@@ -29,20 +49,6 @@ public class Length implements Comparable<Length> {
 
 	public LengthUnit getUnit() {
 		return unit;
-	}
-
-	@Override
-	public int compareTo(Length o) {
-		int res;
-		Length length = (Length) o;
-
-		if (amount * unit.getValue() == length.amount * length.unit.getValue()) {
-			res = 0;
-		} else {
-			res = amount * unit.getValue() > length.amount * length.unit.getValue() ? 1 : -1;
-		}
-
-		return res;
 	}
 
 	@Override
