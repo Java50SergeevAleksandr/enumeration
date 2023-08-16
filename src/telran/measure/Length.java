@@ -4,43 +4,44 @@ import java.util.Locale;
 
 public class Length implements Comparable<Length> {
 
-	private float amount;
-	private LengthUnit unit;
-	private float thisLength;
+	private final float amount;
+	private final LengthUnit unit;
 
 	public Length(float amount, LengthUnit unit) {
 		this.amount = amount;
 		this.unit = unit;
-		thisLength = amount * unit.getValue();
 	}
 
 	@Override
+	/**
+	 * equals two Length objects according to LengthUnit 10m == 10000mm
+	 */
 	public boolean equals(Object obj) {
-		return thisLength == getTargetLength(obj);
+		return compareTo((Length) obj) == 0;
 	}
 
 	@Override
 	public int compareTo(Length o) {
-		int res;
-
-		if (this.equals(o)) {
-			res = 0;
-		} else {
-			res = thisLength > getTargetLength(o) ? 1 : -1;
-		}
-
-		return res;
+		return Float.compare(amount, o.convert(unit).amount);
 	}
 
-	private float getTargetLength(Object obj) {
-		Length length = (Length) obj;
-		return length.amount * length.unit.getValue();
-
+	/**
+	 * 
+	 * @param unit
+	 * @return new Length object with a given LengthUnit convert(LengthUnit.M)
+	 *         returns Length in meters
+	 */
+	public Length convert(LengthUnit unit) {
+		return new Length(amount * this.unit.getValue() / unit.getValue(), unit);
 	}
 
-	public Length convert(LengthUnit l) {
-		float newAmount = thisLength / l.getValue();
-		return new Length(newAmount, l);
+	@Override
+	/**
+	 * returns string with amount and length unit pinned to amount with no space
+	 * Example: 20.0M (string expression of Length object containing 20 meters)
+	 */
+	public String toString() {
+		return String.format(Locale.US, "%.1f%s", amount, unit);
 	}
 
 	public float getAmount() {
@@ -49,11 +50,6 @@ public class Length implements Comparable<Length> {
 
 	public LengthUnit getUnit() {
 		return unit;
-	}
-
-	@Override
-	public String toString() {
-		return String.format(Locale.US, "%.1f%s", amount, unit);
 	}
 
 }

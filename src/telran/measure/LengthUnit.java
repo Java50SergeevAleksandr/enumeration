@@ -14,10 +14,9 @@ public enum LengthUnit {
 
 	}
 
-	public Length between(Length length1, Length length2) {
-		float newValue = Math.abs(length1.getAmount() * length1.getUnit().getValue()
-				- length2.getAmount() * length2.getUnit().getValue());
-		newValue /= value;
-		return new Length(newValue, this);
+	public Length between(Length l1, Length l2) {
+		Length length1 = l1.convert(this);
+		Length length2 = l2.convert(this);
+		return new Length(length2.getAmount() - length1.getAmount(), this);
 	}
 }
