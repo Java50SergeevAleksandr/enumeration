@@ -1,6 +1,7 @@
 package telran.measure;
 
 import java.util.Locale;
+import java.util.Objects;
 
 public class Length implements Comparable<Length> {
 
@@ -12,11 +13,17 @@ public class Length implements Comparable<Length> {
 		this.unit = unit;
 	}
 
-	@Override
 	/**
 	 * equals two Length objects according to LengthUnit 10m == 10000mm
 	 */
+	@Override
 	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
 		return compareTo((Length) obj) == 0;
 	}
 
